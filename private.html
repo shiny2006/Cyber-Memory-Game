@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Awareness Portal</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #141a23;
+            --card-border: #e63946;
+            --item-bg: #1a222f;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent-cyan: #00f2fe;
+            --accent-red: #ff3b30;
+            --button-bg: #00f2fe;
+            --button-text: #0d1117;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            /* Dark fine grid overlay */
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        /* Main Container Card */
+        .card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--card-border);
+            border-radius: 20px;
+            padding: 36px 28px;
+            box-shadow: 0 0 25px rgba(230, 57, 70, 0.15);
+            position: relative;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .warning-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border: 1px solid var(--accent-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 15px rgba(255, 59, 48, 0.3);
+            background: rgba(255, 59, 48, 0.05);
+        }
+
+        .warning-icon {
+            color: #ffcc00;
+            font-size: 28px;
+        }
+
+        .title {
+            color: #ff3b30;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-main);
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* Form View Elements */
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--item-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .cookie-container {
+            background: var(--item-bg);
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cookie-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .cookie-label input[type="checkbox"] {
+            margin-top: 2px;
+            accent-color: var(--accent-cyan);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        /* Awareness List View (Matched to Image) */
+        .awareness-view {
+            display: none;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            background: var(--item-bg);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .info-text {
+            font-size: 13.5px;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+
+        .highlight-id {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .highlight-email {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: var(--accent-cyan);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card">
+
+            <!-- STEP 1: INITIAL LOGIN & CONSENT FORM -->
+            <div id="loginFormView">
+                <div class="header">
+                    <div class="warning-icon-wrapper"
+                        style="border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,242,254,0.2);">
+                        <span class="warning-icon" style="color: var(--accent-cyan);">🔐</span>
+                    </div>
+                    <h1 class="title" style="color: #fff; font-size: 20px;">Employee Verification</h1>
+                    <p class="subtitle" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Please
+                        authenticate to access the requested resource.</p>
+                </div>
+
+                <form id="accessForm" onsubmit="handleVerification(event)">
+                    <div class="form-group">
+                        <label for="empId">Employee ID</label>
+                        <input type="text" id="empId" placeholder="Enter Employee ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter Corporate Email" required>
+                    </div>
+
+                    <div class="cookie-container">
+                        <label class="cookie-label">
+                            <input type="checkbox" id="cookieCheck" required>
+                            <span>☐ I confirm that I have reviewed the above information and agree to proceed with this
+                                activity.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Proceed</button>
+                </form>
+            </div>
+
+            <!-- STEP 2: SIMULATION AWARENESS DISCLOSURE (MATCHES IMAGE EXACTLY) -->
+            <div id="awarenessView" class="awareness-view">
+                <div class="header">
+                    <div class="warning-icon-wrapper">
+                        <span class="warning-icon">⚠️</span>
+                    </div>
+                    <h1 class="title">STOP. THINK. VERIFY.</h1>
+                    <p class="subtitle">This was a Cybersecurity Awareness Simulation.</p>
+                </div>
+
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-icon">🚨</span>
+                        <div class="info-text">
+                            You entered Employee ID (<span id="outEmpId" class="highlight-id"></span>) and Email (<span
+                                id="outEmail" class="highlight-email"></span>) on a simulated page. In a real phishing
+                            attack, similar pages can be used to capture sensitive information.
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-icon">🔍</span>
+                        <div class="info-text">
+                            Verify the source before entering any information.
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-icon">🔐</span>
+                        <div class="info-text">
+                            Never enter credentials on unverified links or QR codes.
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-icon">🚨</span>
+                        <div class="info-text">
+                            Report anything suspicious to the Cybersecurity Team.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-text">
+                    Think before you click. Stay Cyber Safe!
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function handleVerification(event) {
+            event.preventDefault();
+
+            const empId = document.getElementById('empId').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const cookieChecked = document.getElementById('cookieCheck').checked;
+
+            if (!empId || !email || !cookieChecked) {
+                return;
+            }
+
+            // Save cookie preference
+            document.cookie = "activity_consent=confirmed; max-age=86400; path=/";
+
+            // Inject values into awareness view
+            document.getElementById('outEmpId').textContent = empId;
+            document.getElementById('outEmail').textContent = email;
+
+            // Switch screen view
+            document.getElementById('loginFormView').style.display = 'none';
+            document.getElementById('awarenessView').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
