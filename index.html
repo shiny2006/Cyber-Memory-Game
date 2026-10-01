@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TNQ TECH - Cyber Memory Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <script>
+        function handleLogoError(img) {
+            if (!img.dataset.failed) {
+                img.dataset.failed = "true";
+                // Fallback to text placeholder if local tnq_logo image is not found
+                img.src = "https://placehold.co/220x40/0d9488/ffffff?text=TNQ+TECH";
+            }
+        }
+    </script>
+
+    <style>
+        :root[data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%);
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --cell-bg: #ffffff;
+            --cell-text: #1e293b;
+            --cell-border: #cbd5e1;
+            --dual-gradient: linear-gradient(135deg, #0d9488 0%, #7c3aed 100%);
+            --found-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            --shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.12);
+        }
+
+        :root[data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #042f2e 0%, #1e1b4b 100%);
+            --card-bg: #111827;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #374151;
+            --cell-bg: #1f2937;
+            --cell-text: #f8fafc;
+            --cell-border: #374151;
+            --dual-gradient: linear-gradient(135deg, #14b8a6 0%, #a855f7 100%);
+            --found-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            touch-action: manipulation;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            transition: background 0.3s;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+        }
+
+        .dual-text {
+            background: var(--dual-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* HEADER BAR LAYOUT */
+        header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .brand-logo {
+            height: 36px;
+            width: auto;
+            max-width: 220px;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* VECTOR ICON THEME SWITCHER */
+        .icon-theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+
+        .icon-theme-btn:hover {
+            transform: scale(1.08);
+            border-color: #0d9488;
+        }
+
+        .icon-theme-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* LOGIN MODAL OVERLAY */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 28px;
+            max-width: 460px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            text-align: left;
+        }
+
+        .modal-logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border-color);
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-weight: 600;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #0d9488;
+        }
+
+        .cookie-agree-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .cookie-agree-box input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            accent-color: #0d9488;
+            cursor: pointer;
+        }
+
+        .btn-dual {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: var(--dual-gradient);
+            color: white;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-dual:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        /* MAIN CONTAINER & LAYOUT */
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .timer-badge {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0d9488;
+        }
+
+        .game-grid-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
+
+        @media (min-width: 850px) {
+            .game-grid-layout {
+                flex-direction: row;
+                align-items: stretch;
+            }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 12px;
+            flex: 1;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .panel {
+                padding: 18px;
+            }
+        }
+
+        .panel-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        /* GLOSSARY BUTTON ABOVE TOP RIGHT OF CROSSWORD */
+        .btn-glossary-top {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1.5px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-glossary-top:hover {
+            border-color: #0d9488;
+            background: var(--bg-gradient);
+        }
+
+        /* COMPACT WORDS DISPLAY MATRIX */
+        .words-flex {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        @media (min-width: 480px) {
+            .words-flex {
+                grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+                gap: 8px;
+            }
+        }
+
+        .word-key {
+            background: var(--cell-bg);
+            border: 1px solid var(--cell-border);
+            border-bottom: 2.5px solid var(--cell-border);
+            border-radius: 8px;
+            padding: 6px 4px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.72rem;
+            letter-spacing: 0.3px;
+            color: var(--text-main);
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .word-key.found {
+            background: var(--found-gradient);
+            color: white;
+            border-color: #059669;
+            text-decoration: line-through;
+        }
+
+        /* ENLARGED TOUCH-FRIENDLY CROSSWORD GRID BOARD */
+        .crossword-box {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2.5px;
+            background: var(--bg-gradient);
+            padding: 6px;
+            border-radius: 14px;
+            touch-action: none;
+            user-select: none;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        @media (min-width: 480px) {
+            .crossword-box {
+                gap: 5px;
+                padding: 10px;
+            }
+        }
+
+        .cell-key {
+            aspect-ratio: 1;
+            background: var(--cell-bg);
+            border: 1px solid var(--cell-border);
+            border-bottom: 2.5px solid var(--cell-border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: clamp(0.85rem, 3.8vw, 1.2rem);
+            color: var(--cell-text);
+            cursor: pointer;
+        }
+
+        .cell-key.selected {
+            background: var(--dual-gradient) !important;
+            color: white !important;
+            border-color: #7c3aed !important;
+        }
+
+        .cell-key.found {
+            background: var(--found-gradient) !important;
+            color: white !important;
+            border-color: #059669 !important;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .glossary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            text-align: left;
+            margin: 16px 0;
+            padding-right: 6px;
+        }
+
+        .glossary-item {
+            background: var(--bg-gradient);
+            padding: 10px 14px;
+            border-radius: 10px;
+            border-left: 4px solid #0d9488;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="tnq_logo.png" alt="TNQ TECH Logo" class="brand-logo" id="headerLogo"
+            onerror="handleLogoError(this)" />
+        <button class="icon-theme-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle Theme">
+            <svg id="themeSvg" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+        </button>
+    </header>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <img src="tnq_logo.png" alt="TNQ TECH Logo" class="modal-logo" id="modalLogo"
+                onerror="handleLogoError(this)" />
+            <h2 class="dual-text" style="margin-bottom: 4px;">Employee Verification</h2>
+            <p
+                style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600; margin-bottom: 24px; text-align: left;">
+                Enter your details
+            </p>
+
+            <div class="form-group">
+                <label>EMP ID</label>
+                <input type="text" id="empIdInput" class="form-input" placeholder="Enter your Emp id"
+                    oninput="validateLoginForm()" />
+            </div>
+
+            <div class="form-group">
+                <label>COMPANY MAIL ID</label>
+                <input type="email" id="emailInput" class="form-input" placeholder="Enter your Mail id"
+                    oninput="validateLoginForm()" />
+            </div>
+
+            <div class="cookie-agree-box">
+                <input type="checkbox" id="agreeCheckbox" onchange="validateLoginForm()" />
+                <label for="agreeCheckbox">
+                    I confirm that I have reviewed the above information and agree to proceed with this activity.
+                </label>
+            </div>
+
+            <button class="btn-dual" id="loginSubmitBtn" disabled onclick="submitLogin()">Proceed to Challenge</button>
+            <div class="error-msg" id="loginErrorMsg"></div>
+        </div>
+    </div>
+
+    <!-- End Game Glossary Definitions Modal -->
+    <div class="modal-overlay hidden" id="gameOverModal">
+        <div class="modal-card" style="max-width: 520px; text-align: center;">
+            <h2 class="dual-text" id="gameOverTitle">Cybersecurity Glossary</h2>
+            <p id="gameOverScore" style="margin: 8px 0; font-weight: 700; color: var(--text-muted);"></p>
+
+            <div class="glossary-list">
+                <div class="glossary-item"><strong>PRIVACY:</strong> Safeguarding personal and corporate confidential
+                    data from unauthorized exposure.</div>
+                <div class="glossary-item"><strong>SECURE:</strong> Implementing resilient safeguards and controls to
+                    protect systems, data, and users.</div>
+                <div class="glossary-item"><strong>BIAS:</strong> Systematic favoritism, unfair prejudice, or distortion
+                    present in AI algorithms and datasets.</div>
+                <div class="glossary-item"><strong>PROMPT:</strong> Specific input instructions or queries provided to
+                    guide an AI system's generated output.</div>
+                <div class="glossary-item"><strong>ALERT:</strong> Urgent security notification warning users and
+                    administrators of suspicious activity or threats.</div>
+                <div class="glossary-item"><strong>DEEPFAKE:</strong> Synthetic audio or video media manipulated by AI
+                    to impersonate a real individual.</div>
+                <div class="glossary-item"><strong>DATA:</strong> Digital information assets that must be securely
+                    processed, governed, and stored.</div>
+                <div class="glossary-item"><strong>AGENT:</strong> An autonomous software or AI system designed to
+                    perceive its environment and execute tasks.</div>
+                <div class="glossary-item"><strong>RISK:</strong> The probability and negative business impact of
+                    potential cyber vulnerabilities or threats.</div>
+                <div class="glossary-item"><strong>PHISHING:</strong> Deceptive social engineering attacks designed to
+                    trick users into sharing sensitive credentials.</div>
+            </div>
+
+            <button class="btn-dual" onclick="closeDefinitionsModal()">Close Glossary</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <div class="info-card">
+            <div>
+                <h2 class="dual-text" style="font-size: 1.3rem; margin-bottom: 2px;">Cyber Memory Game</h2>
+                <span
+                    style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Instructions</span>
+                <p style="font-size: 0.85rem; font-weight: 600; margin-top: 2px;">
+                    Find all 10 cybersecurity words in the crossword grid. Preview words below, then start!
+                </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div class="timer-badge" id="timerDisplay">Time: 02:00</div>
+                <button class="btn-dual" id="startBtn" style="padding: 10px 18px; width: auto;"
+                    onclick="startChallenge()">Start Challenge</button>
+            </div>
+        </div>
+
+        <div class="game-grid-layout">
+            <!-- Active Words Panel -->
+            <div class="panel">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="dual-text" style="font-size: 1.1rem;">Active Cyber Items</h3>
+                    <span id="foundCounter" style="font-size: 0.82rem; font-weight: 800; color: var(--text-muted);">0 /
+                        10 Found</span>
+                </div>
+                <div class="words-flex" id="wordsContainer"></div>
+            </div>
+
+            <!-- Crossword Panel -->
+            <div class="panel" style="position: relative;">
+                <div class="panel-header-bar">
+                    <h3 class="dual-text" style="font-size: 1.1rem;">Word Search Crossword</h3>
+                    <button class="btn-glossary-top hidden" id="viewDefsBtn" onclick="openDefinitionsModal()">📖 Cyber
+                        Glossary</button>
+                </div>
+
+                <p style="text-align: left; font-size: 0.78rem; color: var(--text-muted);">
+                    Click/Touch & Drag across letters to select a word!
+                </p>
+
+                <!-- Lock Overlay -->
+                <div id="gridLockOverlay"
+                    style="position: absolute; inset: 0; background: rgba(15,23,42,0.68); backdrop-filter: blur(4px); border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; color: white; padding: 20px; text-align: center;">
+                    <div style="font-size: 2.2rem; margin-bottom: 6px;">🔒</div>
+                    <h3 style="margin-bottom: 6px; font-size: 1.1rem;">Crossword Grid Locked</h3>
+                    <p style="font-size: 0.82rem; max-width: 280px; opacity: 0.9;">
+                        Memorize the cyber words, then click "Start Challenge" to unlock the grid and start the 2-minute
+                        timer!
+                    </p>
+                </div>
+
+                <div class="crossword-box" id="crosswordGrid"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyegELE0tdN2scif2sfexKeLVakdfwvZtVx-YAhuTLwVYAAmpfPWaw5JbhQN5qB9wKz/exec";
+        const TARGET_WORDS = ["PRIVACY", "SECURE", "BIAS", "PROMPT", "ALERT", "DEEPFAKE", "DATA", "AGENT", "RISK", "PHISHING"];
+        const GRID_SIZE = 12;
+
+        let GRID_LETTERS = [];
+        let currentUser = null;
+        let foundWords = new Set();
+        let isSelecting = false;
+        let startCellIndex = null;
+        let selectedIndices = [];
+        let timerInterval = null;
+        let gameStartTime = null;
+
+        /* WEB AUDIO SYNTHESIZER ENGINE (No MP3/external files required) */
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playClickSound() {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.04);
+
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.04);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.04);
+            } catch (e) {console.warn("Audio Context Init:", e);}
+        }
+
+        function playWordFoundSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+                    gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.2);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.2);
+                });
+            } catch (e) {console.warn("Audio Error:", e);}
+        }
+
+        function playVictorySound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const chord = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C Major Harmonic
+
+                chord.forEach((freq) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 1.2);
+                });
+            } catch (e) {console.warn("Audio Error:", e);}
+        }
+
+        function playGameOverSound() {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.6);
+
+                gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.6);
+            } catch (e) {console.warn("Audio Error:", e);}
+        }
+
+        window.onload = () => {
+            renderWords();
+            generateShuffledCrossword();
+            renderGrid();
+            document.getElementById("loginModal").classList.remove("hidden");
+        };
+
+        function toggleTheme() {
+            playClickSound();
+            const html = document.documentElement;
+            const themeSvg = document.getElementById("themeSvg");
+            const headerLogo = document.getElementById("headerLogo");
+            const modalLogo = document.getElementById("modalLogo");
+
+            if (html.getAttribute("data-theme") === "light") {
+                html.setAttribute("data-theme", "dark");
+                themeSvg.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+                headerLogo.src = "tnq_logo1.png";
+                modalLogo.src = "tnq_logo1.png";
+            } else {
+                html.setAttribute("data-theme", "light");
+                themeSvg.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>';
+                headerLogo.src = "tnq_logo.png";
+                modalLogo.src = "tnq_logo.png";
+            }
+        }
+
+        function generateShuffledCrossword() {
+            const straightDirections = [
+                {r: 0, c: 1},   // Horizontal
+                {r: 1, c: 0}    // Vertical
+            ];
+            const crossDirections = [
+                {r: 1, c: 1},   // Diagonal Down-Right (Cross)
+                {r: -1, c: 1}   // Diagonal Up-Right (Cross)
+            ];
+
+            let successfulGrid = null;
+            let generationAttempts = 0;
+
+            // Repeat grid generation if all 10 words cannot be placed cleanly
+            while (!successfulGrid && generationAttempts < 50) {
+                generationAttempts++;
+                let grid = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(''));
+
+                // Randomize word order each time
+                let shuffledWords = [...TARGET_WORDS].sort(() => Math.random() - 0.5);
+
+                // Pick exactly one word to be placed diagonally (in cross)
+                const crossCandidateIndex = Math.floor(Math.random() * shuffledWords.length);
+                let allPlaced = true;
+
+                for (let idx = 0; idx < shuffledWords.length; idx++) {
+                    const word = shuffledWords[idx];
+                    const isCrossWord = (idx === crossCandidateIndex);
+                    const availableDirections = isCrossWord ? crossDirections : straightDirections;
+                    let placed = false;
+                    let attempts = 0;
+
+                    while (!placed && attempts < 300) {
+                        attempts++;
+                        const dir = availableDirections[Math.floor(Math.random() * availableDirections.length)];
+                        const startR = Math.floor(Math.random() * GRID_SIZE);
+                        const startC = Math.floor(Math.random() * GRID_SIZE);
+
+                        const endR = startR + dir.r * (word.length - 1);
+                        const endC = startC + dir.c * (word.length - 1);
+
+                        if (endR >= 0 && endR < GRID_SIZE && endC >= 0 && endC < GRID_SIZE) {
+                            let canPlace = true;
+                            for (let i = 0; i < word.length; i++) {
+                                const r = startR + dir.r * i;
+                                const c = startC + dir.c * i;
+                                if (grid[r][c] !== '' && grid[r][c] !== word[i]) {
+                                    canPlace = false;
+                                    break;
+                                }
+                            }
+
+                            if (canPlace) {
+                                for (let i = 0; i < word.length; i++) {
+                                    const r = startR + dir.r * i;
+                                    const c = startC + dir.c * i;
+                                    grid[r][c] = word[i];
+                                }
+                                placed = true;
+                            }
+                        }
+                    }
+
+                    if (!placed) {
+                        allPlaced = false;
+                        break;
+                    }
+                }
+
+                if (allPlaced) {
+                    successfulGrid = grid;
+                }
+            }
+
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            GRID_LETTERS = [];
+            const baseGrid = successfulGrid || Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(''));
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (!baseGrid[r][c] || baseGrid[r][c] === '') {
+                        GRID_LETTERS.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
+                    } else {
+                        GRID_LETTERS.push(baseGrid[r][c]);
+                    }
+                }
+            }
+        }
+
+        function validateLoginForm() {
+            const empId = document.getElementById("empIdInput").value.trim();
+            const email = document.getElementById("emailInput").value.trim();
+            const agreed = document.getElementById("agreeCheckbox").checked;
+            document.getElementById("loginSubmitBtn").disabled = !(empId && email && agreed);
+
+            const errBox = document.getElementById("loginErrorMsg");
+            errBox.style.display = "none";
+            errBox.innerText = "";
+        }
+
+        async function submitLogin() {
+            playClickSound();
+            const empId = document.getElementById("empIdInput").value.trim();
+            const email = document.getElementById("emailInput").value.trim();
+            const loginBtn = document.getElementById("loginSubmitBtn");
+            const errBox = document.getElementById("loginErrorMsg");
+
+            loginBtn.disabled = true;
+            loginBtn.innerText = "Verifying...";
+            errBox.style.display = "none";
+
+            let alreadyExists = false;
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+                const checkUrl = `${SCRIPT_URL}?userId=${encodeURIComponent(empId)}&emailId=${encodeURIComponent(email)}`;
+                const res = await fetch(checkUrl, {signal: controller.signal});
+                clearTimeout(timeoutId);
+
+                const resData = await res.json();
+                if (resData && resData.exists) {
+                    alreadyExists = true;
+                }
+            } catch (err) {
+                console.warn("Fast-pass verification check...", err);
+            }
+
+            if (alreadyExists) {
+                errBox.innerText = "Sorry, you have already completed or registered for this activity!";
+                errBox.style.display = "block";
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Proceed to Challenge";
+                playGameOverSound();
+                return;
+            }
+
+            loginBtn.innerText = "Registering...";
+            currentUser = {empId, email};
+
+            const now = new Date();
+            const payload = {
+                userId: empId,
+                emailId: email,
+                date: now.toISOString().split("T")[0],
+                time: now.toTimeString().split(" ")[0]
+            };
+
+            try {
+                fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.error("GSheet Registration Error", e);
+            }
+
+            document.getElementById("loginModal").classList.add("hidden");
+        }
+
+        function startChallenge() {
+            playClickSound();
+            if (gameStartTime) return;
+            gameStartTime = Date.now();
+
+            document.getElementById("gridLockOverlay").classList.add("hidden");
+            document.getElementById("startBtn").classList.add("hidden");
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsedSeconds = Math.floor((Date.now() - gameStartTime) / 1000);
+            const remainingSeconds = Math.max(0, 120 - elapsedSeconds);
+
+            const mins = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+            const secs = String(remainingSeconds % 60).padStart(2, '0');
+            document.getElementById("timerDisplay").innerText = `Time: ${mins}:${secs}`;
+
+            if (remainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                playGameOverSound();
+                endGame("Time's Up!");
+            }
+        }
+
+        function renderWords() {
+            const container = document.getElementById("wordsContainer");
+            container.innerHTML = "";
+            TARGET_WORDS.forEach(word => {
+                const div = document.createElement("div");
+                div.className = "word-key";
+                div.id = `word-${word}`;
+                div.innerText = word;
+                container.appendChild(div);
+            });
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById("crosswordGrid");
+            grid.innerHTML = "";
+
+            GRID_LETTERS.forEach((letter, index) => {
+                const cell = document.createElement("div");
+                cell.className = "cell-key";
+                cell.dataset.index = index;
+                cell.innerText = letter;
+
+                cell.addEventListener("mousedown", () => startSelection(index));
+                cell.addEventListener("mouseenter", () => dragSelection(index));
+                cell.addEventListener("mouseup", endSelection);
+
+                cell.addEventListener("touchstart", (e) => {
+                    e.preventDefault();
+                    startSelection(index);
+                });
+                cell.addEventListener("touchmove", (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (target && target.dataset && target.dataset.index !== undefined) {
+                        dragSelection(parseInt(target.dataset.index, 10));
+                    }
+                });
+                cell.addEventListener("touchend", endSelection);
+
+                grid.appendChild(cell);
+            });
+
+            document.addEventListener("mouseup", endSelection);
+        }
+
+        function startSelection(index) {
+            if (!gameStartTime) return;
+            playClickSound();
+            isSelecting = true;
+            startCellIndex = index;
+            selectedIndices = [index];
+            highlightSelected();
+        }
+
+        function dragSelection(currentIndex) {
+            if (!isSelecting || startCellIndex === null) return;
+
+            const r1 = Math.floor(startCellIndex / GRID_SIZE);
+            const c1 = startCellIndex % GRID_SIZE;
+            const r2 = Math.floor(currentIndex / GRID_SIZE);
+            const c2 = currentIndex % GRID_SIZE;
+
+            const deltaR = r2 - r1;
+            const deltaC = c2 - c1;
+
+            const isHorizontal = deltaR === 0;
+            const isVertical = deltaC === 0;
+            const isDiagonal = Math.abs(deltaR) === Math.abs(deltaC);
+
+            if (isHorizontal || isVertical || isDiagonal) {
+                const stepR = deltaR === 0 ? 0 : deltaR / Math.abs(deltaR);
+                const stepC = deltaC === 0 ? 0 : deltaC / Math.abs(deltaC);
+                const steps = Math.max(Math.abs(deltaR), Math.abs(deltaC));
+
+                let lineIndices = [];
+                for (let i = 0; i <= steps; i++) {
+                    const r = r1 + stepR * i;
+                    const c = c1 + stepC * i;
+                    lineIndices.push(r * GRID_SIZE + c);
+                }
+
+                if (lineIndices.length !== selectedIndices.length) {
+                    playClickSound();
+                }
+                selectedIndices = lineIndices;
+                highlightSelected();
+            }
+        }
+
+        function endSelection() {
+            if (!isSelecting) return;
+            isSelecting = false;
+
+            const selectedWord = selectedIndices.map(idx => GRID_LETTERS[idx]).join("");
+            const reversedWord = selectedWord.split("").reverse().join("");
+
+            let matchedWord = null;
+            if (TARGET_WORDS.includes(selectedWord)) matchedWord = selectedWord;
+            else if (TARGET_WORDS.includes(reversedWord)) matchedWord = reversedWord;
+
+            if (matchedWord && !foundWords.has(matchedWord)) {
+                foundWords.add(matchedWord);
+                selectedIndices.forEach(idx => {
+                    document.querySelector(`[data-index='${idx}']`).classList.add("found");
+                });
+                document.getElementById(`word-${matchedWord}`).classList.add("found");
+                document.getElementById("foundCounter").innerText = `${foundWords.size} / 10 Found`;
+
+                if (foundWords.size === TARGET_WORDS.length) {
+                    clearInterval(timerInterval);
+                    playVictorySound();
+                    endGame("Congratulations! All Words Found!");
+                } else {
+                    playWordFoundSound();
+                }
+            }
+
+            selectedIndices = [];
+            startCellIndex = null;
+            clearSelection();
+        }
+
+        function highlightSelected() {
+            clearSelection();
+            selectedIndices.forEach(idx => {
+                const cell = document.querySelector(`[data-index='${idx}']`);
+                if (cell) cell.classList.add("selected");
+            });
+        }
+
+        function clearSelection() {
+            document.querySelectorAll(".cell-key.selected").forEach(cell => {
+                cell.classList.remove("selected");
+            });
+        }
+
+        function openDefinitionsModal() {
+            playClickSound();
+            document.getElementById("gameOverModal").classList.remove("hidden");
+        }
+
+        function closeDefinitionsModal() {
+            playClickSound();
+            document.getElementById("gameOverModal").classList.add("hidden");
+        }
+
+        async function endGame(title) {
+            clearInterval(timerInterval);
+            const elapsedSeconds = Math.min(120, Math.floor((Date.now() - gameStartTime) / 1000));
+
+            document.getElementById("gameOverTitle").innerText = title;
+            document.getElementById("gameOverScore").innerText = `Words Found: ${foundWords.size}/10 | Time Taken: ${elapsedSeconds}s`;
+            document.getElementById("gameOverModal").classList.remove("hidden");
+            document.getElementById("viewDefsBtn").classList.remove("hidden");
+
+            if (currentUser && currentUser.empId) {
+                try {
+                    fetch(SCRIPT_URL, {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            action: "updateScore",
+                            userId: currentUser.empId,
+                            score: foundWords.size,
+                            timeTaken: elapsedSeconds
+                        })
+                    });
+                } catch (e) {
+                    console.error("Score Update Error", e);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
